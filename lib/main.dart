@@ -28,39 +28,79 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  int _questionNumber = 0;
 
-  void _incrementCounter() {
+  // ignore: todo
+  // TODO: Replace this according to question size.
+  static const _questionSize = 12;
+  static const questions = [
+    Question(
+      questionText: 'How many MRT stations are there in Oct 2020?',
+      correctAnswer: 1,
+      choices: ['120', '130', '140', '150'],
+    ),
+  ];
+  void _incrementquestionNumber() {
     setState(() {
-      _counter++;
+      _questionNumber++;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final question = questions[_questionNumber];
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Text(
-              'You have pushed the button this many times:',
+              'Question ${_questionNumber + 1}/$_questionSize',
+              textAlign: TextAlign.center,
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 48.0),
+              child: Text(
+                question.questionText,
+                textAlign: TextAlign.center,
+              ),
             ),
+            for (final choice in question.choices) ...[
+              const SizedBox(height: 20.0),
+              RaisedButton(
+                color: Theme.of(context).backgroundColor,
+                onPressed: () => print('pressed'),
+                child: Text(
+                  choice,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+        onPressed: _questionNumber < questions.length - 1
+            ? _incrementquestionNumber
+            : null,
+        tooltip: 'Next question',
+        child: Icon(Icons.navigate_next),
       ),
     );
   }
+}
+
+class Question {
+  const Question({
+    @required this.questionText,
+    @required this.choices,
+    @required this.correctAnswer,
+  });
+
+  final String questionText;
+  final List<String> choices;
+  final int correctAnswer;
 }
