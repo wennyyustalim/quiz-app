@@ -90,10 +90,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 color: Theme.of(context).backgroundColor,
                 onPressed: () {
                   if (choiceIndex == correctAnswerIndex) {
-                    print('Correct answer!');
                     _showCorrectDialog(context);
                   } else {
-                    print('Wrong answer!');
+                    _showIncorrectDialog(context);
                   }
                 },
                 child: Text(
@@ -120,6 +119,24 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () {
               Navigator.of(context).pop();
               _showNextQuestion();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  void _showIncorrectDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('Wrong answer!'),
+        content: Text('No worries, you can always try again.'),
+        actions: [
+          FlatButton(
+            child: Text('Dismiss'),
+            onPressed: () {
+              Navigator.of(context).pop();
             },
           )
         ],
