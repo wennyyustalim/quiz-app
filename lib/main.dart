@@ -39,6 +39,21 @@ class _MyHomePageState extends State<MyHomePage> {
       correctAnswer: 1,
       choices: ['120', '130', '140', '150'],
     ),
+    Question(
+      questionText: 'When is the National Day in Singapore?',
+      correctAnswer: 2,
+      choices: ['11 Aug', '10 Aug', '9 Aug', '8 Aug'],
+    ),
+    Question(
+      questionText: 'What is the color of Singapore national flag?',
+      correctAnswer: 0,
+      choices: [
+        'Red & white',
+        'Red & blue',
+        'White & yellow',
+        'Green & blue',
+      ],
+    ),
   ];
   void _incrementquestionNumber() {
     setState(() {
@@ -56,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
+          children: [
             Text(
               'Question ${_questionNumber + 1}/$_questionSize',
               textAlign: TextAlign.center,
@@ -68,28 +83,70 @@ class _MyHomePageState extends State<MyHomePage> {
                 textAlign: TextAlign.center,
               ),
             ),
-            for (final choice in question.choices) ...[
-              const SizedBox(height: 20.0),
-              RaisedButton(
+            ...question.choices.asMap().entries.map((choice) {
+              final choiceIndex = choice.key;
+              final correctAnswerIndex = question.correctAnswer;
+              return RaisedButton(
                 color: Theme.of(context).backgroundColor,
-                onPressed: () => print('pressed'),
+                onPressed: () {
+                  if (choiceIndex == correctAnswerIndex) {
+                    print('Correct answer!');
+                    _showCorrectDialog(context);
+                  } else {
+                    print('Wrong answer!');
+                  }
+                },
                 child: Text(
-                  choice,
+                  choice.value,
                   textAlign: TextAlign.center,
                 ),
-              ),
-            ],
+              );
+            }),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _questionNumber < questions.length - 1
-            ? _incrementquestionNumber
-            : null,
-        tooltip: 'Next question',
-        child: Icon(Icons.navigate_next),
+    );
+  }
+
+  void _showCorrectDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('Correct answer!'),
+        content: Text('You may proceed to the next question'),
+        actions: [
+          FlatButton(
+            child: Text('Next question'),
+            onPressed: () {
+              Navigator.of(context).pop();
+              _showNextQuestion();
+            },
+          )
+        ],
       ),
     );
+  }
+
+  void _showNextQuestion() {
+    if (_questionNumber < questions.length - 1) {
+      _incrementquestionNumber();
+    } else {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text('Congrats on finishing the quiz!'),
+          content: Text('There are no more questions left.'),
+          actions: [
+            FlatButton(
+              child: Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        ),
+      );
+    }
   }
 }
 
